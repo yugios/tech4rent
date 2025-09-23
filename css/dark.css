@@ -1,0 +1,18 @@
+body {
+  background-color: #121212;
+  color: #f1f1f1;
+}
+
+.navbar, #sidebar {
+  background-color: #1f1f1f !important;
+}
+
+.card {
+  background-color: #1f1f1f;
+  color: #f1f1f1;
+  border: none;
+}
+
+.floating-btn {
+  background: #0d6efd;
+}

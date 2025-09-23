@@ -1,0 +1,310 @@
+/* ===========================
+   General Styles
+=========================== */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #50C878; /* Emerald background */
+  color: #E5E4E2;       /* Platinum text */
+  transition: background 0.3s, color 0.3s;
+}
+
+body.dark-mode {
+  background: #121212;
+  color: #eee;
+}
+
+/* ===========================
+   Navbar
+=========================== */
+.navbar {
+  background: #50C878 !important; /* Emerald */
+  padding: 0.4rem 1rem;
+}
+
+.navbar .navbar-brand img {
+  height: 20px;
+}
+
+.navbar .nav-link {
+  color: #E5E4E2 !important; /* Platinum text */
+  font-weight: 500;
+}
+
+.navbar .nav-link:hover {
+  color: #ffffff !important;
+}
+
+.navbar-toggler {
+  border-color: #E5E4E2 !important;
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgb(229,228,226)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+/* ===========================
+   Hero Section
+=========================== */
+.hero-section {
+  position: relative;
+  height: 450px;
+  overflow: hidden;
+  background: #50C878; /* Emerald */
+}
+
+body.dark-mode .hero-section {
+  background: #1e1e1e;
+}
+
+.hero-slide {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.hero-slide.active {
+  opacity: 1;
+}
+
+.hero-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-content {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #E5E4E2; /* Platinum text */
+}
+
+.hero-content h1 {
+  font-size: 2.8rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #E5E4E2; /* Platinum heading */
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #50C878; /* Emerald description */
+}
+
+.hero-content .btn-primary {
+  background: #E5E4E2; /* Platinum button */
+  border: none;
+  font-weight: bold;
+  color: #50C878;
+}
+
+.hero-content .btn-primary:hover {
+  background: #d9d8d7;
+}
+
+/* ===========================
+   Product Grid & Cards
+=========================== */
+.products-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.products-row > .col {
+  display: flex;
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  padding: 15px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+.product-card img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.product-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.product-actions button {
+  flex: 1;
+  background: #E5E4E2; /* Platinum buttons */
+  border: none;
+  color: #50C878; /* Emerald text */
+  font-weight: bold;
+  padding: 8px 0;
+  border-radius: 5px;
+}
+
+.product-actions button:hover {
+  background: #d9d8d7;
+}
+
+/* ===========================
+   Side Menu
+=========================== */
+.side-menu {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 300px;
+  height: 100%;
+  background: rgba(80,200,120,0.95); /* Emerald */
+  backdrop-filter: blur(8px);
+  color: #E5E4E2; /* Platinum text */
+  z-index: 1050;
+  padding: 30px;
+  transition: left 0.4s ease;
+}
+
+.side-menu.active { left: 0; }
+
+.side-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.side-menu h4 { margin: 0; }
+
+.side-menu ul {
+  padding-left: 0;
+}
+
+.side-menu ul li a {
+  color: #E5E4E2; /* Platinum links */
+  text-decoration: none;
+  display: block;
+  padding: 8px 0;
+}
+
+.side-menu ul li a:hover { color: #ffffff; }
+
+.sub-menu { display: none; }
+.sub-menu.active { display: block; }
+
+/* ===========================
+   Floating Button
+=========================== */
+.floating-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 999;
+  padding: 15px 20px;
+  border-radius: 50px;
+  background: #E5E4E2; /* Platinum */
+  color: #50C878; /* Emerald text */
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.floating-btn:hover { background: #d9d8d7; }
+
+/* ===========================
+   Wheel Overlay
+=========================== */
+.wheel-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  backdrop-filter: blur(5px);
+  background-color: rgba(0,0,0,0.25);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+.wheel-container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  position: relative;
+}
+
+#wheel-container {
+  position: relative;
+  display: inline-block;
+}
+
+#pointer {
+  position: absolute;
+  top: 40%;
+  right: 50px;
+  transform: translateY(0%) rotate(270deg);
+  font-size: 40px;
+  color: #50C878; /* Emerald pointer */
+  z-index: 10;
+}
+
+/* Coupon Result */
+#wheel-overlay #coupon-result {
+  color: #000000; /* Emerald text for coupon */
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+
+/* ===========================
+   Responsive Adjustments
+=========================== */
+@media (max-width: 992px) {
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+  .hero-content p {
+    font-size: 1rem;
+  }
+  .product-card img {
+    height: 250px;
+  }
+}
+
+.modal-body {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.remove-cart, .remove-wishlist {
+  border-radius: 50%;
+  font-size: 0.8rem;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
