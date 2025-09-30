@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tech4Rent - Laptop & Gaming Rental</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+  <div class="container-fluid">
+    <!-- Brand + Hamburger -->
+    <a href="#" class="navbar-brand" onclick="showHomePage()"><img src="img/bgr.png" height="40" alt="Tech4Rent Logo"></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Menu + Right side -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <!-- Left menu -->
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link active" href="#" onclick="showHomePage()" id="navHome">Home</a></li>
+
+        <!-- Laptops Mega Menu -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" id="navLaptops">Laptops</a>
+          <ul class="dropdown-menu mega-menu p-3">
+            <div class="row">
+              <div class="col-md-6">
+                <h6 id="navBrands">Brands</h6>
+                <a class="dropdown-item" href="#" onclick="filterCategory('laptop')">HP</a>
+                <a class="dropdown-item" href="#" onclick="filterCategory('laptop')">Dell</a>
+                <a class="dropdown-item" href="#" onclick="filterCategory('laptop')">Apple</a>
+                <a class="dropdown-item" href="#" onclick="filterCategory('laptop')">Lenovo</a>
+              </div>
+            </div>
+          </ul>
+        </li>
+
+        <!-- Audio -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" id="navAudio">Audio</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#" onclick="filterCategory('audio')">JBL Speakers</a></li>
+          </ul>
+        </li>
+
+        <!-- Games -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" id="navGames">Games</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#" onclick="filterCategory('game')">PS5</a></li>
+            <li><a class="dropdown-item" href="#" onclick="filterCategory('game')">PS4</a></li>
+            <li><a class="dropdown-item" href="#" onclick="filterCategory('game')">Xbox</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <!-- Right side: Search + Buttons + Icons -->
+      <div class="ms-auto d-flex align-items-center gap-2">
+        <!-- Search -->
+        <input id="searchInput" class="form-control form-control-sm" type="search" placeholder="Zoeken...">
+        <button id="searchBtn" class="btn btn-success btn-sm" id="searchButton">Zoek</button>
+
+        <!-- Theme + Language -->
+        <button id="theme-toggle" class="btn btn-outline-light btn-sm">🌙</button>
+        <button id="lang-toggle" class="btn btn-outline-light btn-sm">NL</button>
+
+        <!-- Wishlist -->
+        <button id="wishlist-btn" class="btn btn-outline-light btn-sm position-relative">
+          <svg fill="none" height="20" viewBox="0 0 24 24" width="20">
+            <path d="M12.68 20.75C12.29 21.08 11.71 21.08 11.32 20.75C7.62 17.54 2 13.61 2 8.5C2 5.41 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.08C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.41 22 8.5C22 13.61 16.38 17.54 12.68 20.75Z" fill="#fff"/>
+          </svg>
+          <span id="wishlist-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+        </button>
+
+        <!-- Cart -->
+        <button id="cart-btn" class="btn btn-outline-light btn-sm position-relative">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M3.07 3a1 1 0 0 0 0 2h1.37l3.11 12h9.56a2 2 0 0 0 1.93-1.48l1.88-7A2 2 0 0 0 19 6H6.77l-.78-3zM9.1 15 7.3 8h11.7l-1.88 7z"/>
+            <path fill="currentColor" d="M11 20a2 2 0 1 1-4 0 2 2 0 0 1 4 0M19 20a2 2 0 1 1-4 0 2 2 0 0 1 4 0"/>
+          </svg>
+          <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero-section position-relative">
+  <div class="hero-slide active"><img src="img/hp1.jpeg" alt="HP Laptop"></div>
+  <div class="hero-slide"><img src="img/dell.jpeg" alt="Dell Laptop"></div>
+  <div class="hero-slide"><img src="img/apple.jpeg" alt="Apple Laptop"></div>
+  <div class="hero-slide"><img src="img/asus.jpeg" alt="Asus Laptop"></div>
+
+  <div class="hero-content text-center text-white">
+    <h1 id="heroTitle">Huur vandaag nog een laptop!</h1>
+    <button id="heroCTA" class="btn btn-primary btn-lg">Reserveer Nu</button>
+  </div>
+</section>
+
+<!-- Home Page -->
+<section class="container my-5" id="home-page">
+  <h2 id="productsTitle" class="text-center mb-4">Populaire Producten</h2>
+  
+  <div id="product-grid" class="row"></div>
+</section>
+
+<!-- Wishlist Page -->
+<section class="container my-5" id="wishlist-page" style="display:none;">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 id="wishlistPageTitle">💚 Mijn Reserveringen</h2>
+    <button class="btn btn-outline-secondary" onclick="showHomePage()" id="backToHomeWishlist">← Terug naar Home</button>
+  </div>
+  
+  <div id="wishlist-content">
+    <div class="row" id="wishlist-items-grid"></div>
+    <div id="empty-wishlist" class="text-center py-5">
+      <h4 id="emptyWishlistTitle">Je hebt nog geen reserveringen</h4>
+      <p id="emptyWishlistText">Voeg producten toe aan je wishlist om ze hier te zien</p>
+      <button class="btn btn-primary" onclick="showHomePage()" id="exploreProductsWishlist">Verken Producten</button>
+    </div>
+  </div>
+</section>
+
+<!-- Cart Page -->
+<section class="container my-5" id="cart-page" style="display:none;">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 id="cartPageTitle">🛒 Mijn Winkelwagen</h2>
+    <button class="btn btn-outline-secondary" onclick="showHomePage()" id="continueShopping">← Verder Winkelen</button>
+  </div>
+  
+  <div class="row">
+    <div class="col-lg-8">
+      <div id="cart-items-list" class="card">
+        <div class="card-body">
+          <div id="empty-cart" class="text-center py-4">
+            <h5 id="emptyCartTitle">Je winkelwagen is leeg</h5>
+            <p id="emptyCartText">Voeg producten toe aan je winkelwagen om ze hier te zien</p>
+            <button class="btn btn-primary" onclick="showHomePage()" id="exploreProductsCart">Verken Producten</button>
+          </div>
+          <div id="cart-items-container"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title" id="orderSummaryTitle">Bestelling Overzicht</h5>
+          <div id="order-summary">
+            <div class="d-flex justify-content-between mb-2">
+              <span id="subtotalLabel">Subtotaal:</span>
+              <span id="subtotal">€0.00</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span id="shippingLabel">Verzendkosten:</span>
+              <span id="shipping">€0.00</span>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between mb-3">
+              <strong id="totalLabel">Totaal:</strong>
+              <strong id="total">€0.00</strong>
+            </div>
+            <button id="checkout-btn" class="btn btn-primary w-100" onclick="showCheckoutPage()" disabled id="proceedToCheckout">
+              Doorgaan naar Afrekenen
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Checkout Page -->
+<section class="container my-5" id="checkout-page" style="display:none;">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 id="checkoutPageTitle">💰 Afrekenen</h2>
+    <button class="btn btn-outline-secondary" onclick="showCartPage()" id="backToCart">← Terug naar Winkelwagen</button>
+  </div>
+  
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title mb-4" id="personalDetailsTitle">Persoonlijke Gegevens</h5>
+          <form id="checkout-form">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="firstName" class="form-label" id="firstNameLabel">Voornaam *</label>
+                <input type="text" class="form-control" id="firstName" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="lastName" class="form-label" id="lastNameLabel">Achternaam *</label>
+                <input type="text" class="form-control" id="lastName" required>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="email" class="form-label" id="emailLabel">Email *</label>
+              <input type="email" class="form-control" id="email" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="phone" class="form-label" id="phoneLabel">Telefoonnummer *</label>
+              <input type="tel" class="form-control" id="phone" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="address" class="form-label" id="addressLabel">Adres *</label>
+              <input type="text" class="form-control" id="address" required>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="city" class="form-label" id="cityLabel">Stad *</label>
+                <input type="text" class="form-control" id="city" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="postalCode" class="form-label" id="postalCodeLabel">Postcode *</label>
+                <input type="text" class="form-control" id="postalCode" required>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Credit Card Information -->
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title mb-4" id="paymentDetailsTitle">Betaalgegevens</h5>
+          <div class="row">
+            <div class="col-12 mb-3">
+              <label for="cardNumber" class="form-label" id="cardNumberLabel">Creditcard Nummer *</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456" required maxlength="19">
+                <span class="input-group-text">
+                  <img src="https://img.icons8.com/color/48/000000/visa.png" height="20" alt="Visa" class="me-1">
+                  <img src="https://img.icons8.com/color/48/000000/mastercard.png" height="20" alt="Mastercard">
+                </span>
+              </div>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+              <label for="cardName" class="form-label" id="cardNameLabel">Naam op Kaart *</label>
+              <input type="text" class="form-control" id="cardName" required>
+            </div>
+            
+            <div class="col-md-3 mb-3">
+              <label for="expiryDate" class="form-label" id="expiryDateLabel">Vervaldatum *</label>
+              <input type="text" class="form-control" id="expiryDate" placeholder="MM/JJ" required maxlength="5">
+            </div>
+            
+            <div class="col-md-3 mb-3">
+              <label for="cvv" class="form-label" id="cvvLabel">CVV *</label>
+              <input type="text" class="form-control" id="cvv" placeholder="123" required maxlength="3">
+            </div>
+          </div>
+          
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="terms" required>
+            <label class="form-check-label" for="terms" id="termsLabel">
+              Ik ga akkoord met de algemene voorwaarden *
+            </label>
+          </div>
+
+          <div class="alert alert-info">
+            <small id="securePaymentText">
+              <strong>Veilige betaling:</strong> Je gegevens worden versleuteld verzonden en wij slaan je creditcard informatie niet op.
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title" id="orderTitle">Bestelling</h5>
+          <div id="checkout-summary">
+            <div id="checkout-items"></div>
+            <hr>
+            <div class="d-flex justify-content-between mb-2">
+              <span id="checkoutSubtotalLabel">Subtotaal:</span>
+              <span id="checkout-subtotal">€0.00</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span id="checkoutShippingLabel">Verzendkosten:</span>
+              <span id="checkout-shipping">€0.00</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span id="rentalPeriodLabel">Huurperiode:</span>
+              <span id="rental-type">-</span>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between mb-3">
+              <strong id="checkoutTotalLabel">Totaal:</strong>
+              <strong id="checkout-total">€0.00</strong>
+            </div>
+          </div>
+          
+          <button id="confirm-order-btn" class="btn btn-success w-100" onclick="processOrder()" id="confirmOrderButton">
+            Bevestig Bestelling & Betaal
+          </button>
+          
+          <div class="text-center mt-3">
+            <small class="text-muted" id="sslText">
+              <img src="https://img.icons8.com/color/48/000000/ssl.png" height="20" alt="SSL" class="me-1">
+              256-bit SSL versleuteling
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Order Confirmation Page -->
+<section class="container my-5" id="order-confirmation-page" style="display:none;">
+  <div class="text-center py-5">
+    <div class="mb-4">
+      <span style="font-size: 4rem;">🎉</span>
+    </div>
+    <h2 class="text-success" id="orderConfirmedTitle">Bestelling Bevestigd!</h2>
+    <p class="lead" id="orderConfirmedText">Bedankt voor je reservering bij Tech4Rent</p>
+    
+    <div class="card mt-4 mx-auto" style="max-width: 500px;">
+      <div class="card-body">
+        <h5 class="card-title" id="orderDetailsTitle">Order Details</h5>
+        <div id="order-details"></div>
+      </div>
+    </div>
+    
+    <div class="mt-4">
+      <button class="btn btn-primary" onclick="showHomePage()" id="backToHomeConfirm">Terug naar Home</button>
+      <button class="btn btn-outline-secondary" onclick="printOrder()" id="printConfirmation">Print Bevestiging</button>
+    </div>
+  </div>
+</section>
+
+<!-- Voordelen sectie -->
+<section class="container text-center my-5" id="benefits-section">
+  <h2 id="whyTitle">Waarom bij ons huren?</h2>
+  <div class="row mt-4">
+    <div class="col-md-4">
+      <div class="card shadow p-3">
+        <img src="https://img.icons8.com/ios-filled/100/laptop.png" class="mx-auto" alt="Laptop icoon">
+        <h5 id="why1Title" class="mt-3">Topkwaliteit Laptops</h5>
+        <p id="why1Text">Altijd up-to-date modellen die klaar zijn voor gebruik.</p>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow p-3">
+        <img src="https://img.icons8.com/ios-filled/100/cheap-2.png" class="mx-auto" alt="Prijs icoon">
+        <h5 id="why2Title" class="mt-3">Betaalbare prijzen</h5>
+        <p id="why2Text">Flexibele huurpakketten: per dag, week of maand.</p>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow p-3">
+        <img src="https://img.icons8.com/ios-filled/100/customer-support.png" class="mx-auto" alt="Support icoon">
+        <h5 id="why3Title" class="mt-3">24/7 Support</h5>
+        <p id="why3Text">Technische ondersteuning zodat je nooit stilvalt.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Reviews -->
+<section class="reviews container my-5">
+  <h2 id="reviewsTitle" class="text-center mb-4">Wat klanten zeggen</h2>
+  <div class="carousel slide" id="reviewsCarousel" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active text-center">
+        <p>"Heel goedkoop, maar gratis zou het beste zijn."</p>
+        <small>- Kevin</small>
+      </div>
+      <div class="carousel-item text-center">
+        <p>"Te duur en tweede handse kwaliteit."</p>
+        <small>- Gael</small>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </button>
+  </div>
+</section>
+
+<!-- Floating Spin Wheel Button -->
+<button id="spin-btn" class="floating-btn">Speel & Win Korting!</button>
+
+<!-- Wheel Overlay -->
+<div id="wheel-overlay" class="wheel-overlay">
+  <div class="wheel-container">
+    <canvas id="wheel" width="400" height="400"></canvas>
+    <div id="pointer">&#9650;</div>
+    <button id="spin-wheel-btn" class="btn btn-primary mt-3">Spin!</button>
+    <div id="coupon-result" class="mt-2 fw-bold"></div>
+    <button id="close-wheel" class="btn btn-danger mt-3">Sluiten</button>
+  </div>
+</div>
+
+
+
+<!-- ADD THIS CONTAINER FOR DYNAMIC PAGES -->
+<section id="main-content" class="container my-5" style="display:none;"></section>
+
+
+
+<!-- Footer -->
+<footer class="bg-dark text-white py-5 mt-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <h5>Over Tech4Rent</h5>
+        <p>Wij verhuren hoogwaardige laptops en gaming apparatuur tegen betaalbare prijzen. Perfect voor studenten, ondernemers en gamers.</p>
+        <div class="social-links">
+          <a href="https://facebook.com" class="text-white me-3" target="_blank">
+            <i class="fab fa-facebook fa-2x"></i>
+          </a>
+          <a href="https://instagram.com" class="text-white me-3" target="_blank">
+            <i class="fab fa-instagram fa-2x"></i>
+          </a>
+          <a href="https://twitter.com" class="text-white me-3" target="_blank">
+            <i class="fab fa-twitter fa-2x"></i>
+          </a>
+          <a href="https://linkedin.com" class="text-white" target="_blank">
+            <i class="fab fa-linkedin fa-2x"></i>
+          </a>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-4">
+        <h5>Snelle Links</h5>
+        <ul class="list-unstyled">
+          <li><a href="#" class="text-white text-decoration-none" onclick="showHomePage()">Home</a></li>
+          <li><a href="#" class="text-white text-decoration-none" onclick="showTermsPage()">Algemene Voorwaarden</a></li>
+          <li><a href="#" class="text-white text-decoration-none" onclick="showAboutPage()">Over Ons</a></li>
+          <li><a href="#" class="text-white text-decoration-none" onclick="showCartPage()">Winkelwagen</a></li>
+        </ul>
+      </div>
+      
+      <div class="col-md-4 mb-4">
+        <h5>Contact</h5>
+        <p>
+          <i class="fas fa-envelope me-2"></i> info@tech4rent.com<br>
+          <i class="fas fa-phone me-2"></i> +597 445812<br>
+          <i class="fas fa-map-marker-alt me-2"></i> Paramaribo, Suriname
+        </p>
+        <div class="payment-methods">
+          <img src="https://img.icons8.com/color/48/000000/visa.png" height="30" alt="Visa" class="me-2">
+          <img src="https://img.icons8.com/color/48/000000/mastercard.png" height="30" alt="Mastercard" class="me-2">
+          <img src="https://img.icons8.com/color/48/000000/ssl.png" height="30" alt="SSL Secure">
+        </div>
+      </div>
+    </div>
+    
+    <hr class="my-4">
+    
+    <div class="text-center">
+      <p>&copy; 2025 Tech4Rent. Alle rechten voorbehouden.</p>
+    </div>
+  </div>
+</footer>
+
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/main.js"></script>
+<script src="js/terms.js"></script>
+<script src="js/about.js"></script>
+<script src="js/wheel.js"></script>
+</body>
+</html>
+
