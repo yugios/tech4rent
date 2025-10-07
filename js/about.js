@@ -74,7 +74,7 @@ function renderAboutPage() {
                             <h5>Contact Informatie</h5>
                             <p>
                                 <i class="fas fa-envelope me-2"></i> <strong>Email:</strong> info@tech4rent.com<br>
-                                <i class="fas fa-phone me-2"></i> <strong>Telefoon:</strong> +597 1234567<br>
+                                <i class="fas fa-phone me-2"></i> <strong>Telefoon:</strong> +597 445812<br>
                                 <i class="fas fa-map-marker-alt me-2"></i> <strong>Adres:</strong> Paramaribo, Suriname
                             </p>
                         </div>
@@ -96,4 +96,5 @@ function renderAboutPage() {
     mainContent.style.display = 'block';
     currentPage = 'about';
     updateLanguage();
+
 }
