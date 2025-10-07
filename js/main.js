@@ -37,10 +37,11 @@ function showHomePage() {
   document.getElementById('home-page').style.display = 'block';
   document.getElementById('benefits-section').style.display = 'block';
   document.querySelector('.reviews').style.display = 'block';
+  document.getElementById('video-reviews').style.display = 'block'; 
   toggleHeroSection(true);
   currentPage = 'home';
   renderProducts(products);
-  updateLanguage(); // Update taal bij pagina wissel
+  updateLanguage();
 }
 
 function showWishlistPage() {
@@ -49,7 +50,7 @@ function showWishlistPage() {
   toggleHeroSection(false);
   currentPage = 'wishlist';
   renderWishlistItems();
-  updateLanguage(); // Update taal bij pagina wissel
+  updateLanguage();
 }
 
 function showCartPage() {
@@ -59,7 +60,7 @@ function showCartPage() {
   currentPage = 'cart';
   renderCartItems();
   updateOrderSummary();
-  updateLanguage(); // Update taal bij pagina wissel
+  updateLanguage();
 }
 
 function showCheckoutPage() {
@@ -73,16 +74,17 @@ function showCheckoutPage() {
   toggleHeroSection(false);
   currentPage = 'checkout';
   renderCheckoutSummary();
-  updateLanguage(); // Update taal bij pagina wissel
+  updateCheckoutCouponDisplay();
+  updateLanguage();
   
   // Set rental period in checkout
   document.getElementById('rental-type').textContent = getPeriodText(selectedRentalPeriod);
 }
 
-// Add these page navigation functions to main.js
 function showAboutPage() {
   hideAllPages();
   renderAboutPage();
+  toggleHeroSection(false);
   currentPage = 'about';
   updateLanguage();
 }
@@ -90,11 +92,11 @@ function showAboutPage() {
 function showTermsPage() {
   hideAllPages();
   renderTermsPage();
+  toggleHeroSection(false);
   currentPage = 'terms';
   updateLanguage();
 }
 
-// Update the hideAllPages function to include the main-content
 function hideAllPages() {
   document.getElementById('home-page').style.display = 'none';
   document.getElementById('wishlist-page').style.display = 'none';
@@ -103,15 +105,14 @@ function hideAllPages() {
   document.getElementById('order-confirmation-page').style.display = 'none';
   document.getElementById('benefits-section').style.display = 'none';
   document.querySelector('.reviews').style.display = 'none';
+  document.getElementById('video-reviews').style.display = 'none';
   
-  // Hide main-content if it exists
   const mainContent = document.getElementById('main-content');
   if (mainContent) {
     mainContent.style.display = 'none';
   }
 }
 
-// Add this function to show main-content pages
 function showMainContentPage() {
   const mainContent = document.getElementById('main-content');
   if (mainContent) {
@@ -119,7 +120,6 @@ function showMainContentPage() {
   }
   toggleHeroSection(false);
 }
-
 
 function toggleHeroSection(show) {
   const heroSection = document.querySelector('.hero-section');
@@ -148,7 +148,7 @@ function getPeriodText(period) {
   return periods[period] || period;
 }
 
-// Product Rendering met huurperiode selector in elke product cel
+// Product Rendering
 function renderProducts(list) {
   productGrid.innerHTML = '';
   
@@ -235,7 +235,7 @@ function changeRentalPeriod(period, productId = null) {
   }
 }
 
-// Reserve Product Function (vaste prijs van €15)
+// Reserve Product Function
 function reserveProduct(productId) {
   const product = products.find(p => p.id === productId);
   if (!product.available) return;
@@ -265,7 +265,7 @@ function reserveProduct(productId) {
   showNotification(`${product.name} ${getTranslation('reservedFor')} €${RESERVE_PRICE}!`, 'success');
 }
 
-// Add to Cart Function (normale prijs)
+// Add to Cart Function
 function addToCart(productId) {
   const product = products.find(p => p.id === productId);
   if (!product.available) return;
@@ -470,32 +470,92 @@ function removeFromCart(productId, type) {
   showNotification(`${product.name} ${getTranslation('removedFromCart')}!`, 'info');
 }
 
-function updateOrderSummary() {
-  const subtotal = cartItems.reduce((total, item) => {
+// COUPON CALCULATION FUNCTIONS
+function calculateCartSubtotal() {
+  let subtotal = 0;
+  const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+  
+  cartItems.forEach(item => {
     const price = item.selectedPrice || getPriceForPeriod(item, item.rentalPeriod);
-    return total + (price * (item.quantity || 1));
-  }, 0);
+    subtotal += price * (item.quantity || 1);
+  });
   
+  return subtotal;
+}
+
+function getActiveCoupon() {
+  const stored = localStorage.getItem('tech4rent_coupon');
+  return stored ? JSON.parse(stored) : null;
+}
+
+function calculateDiscount(subtotal, coupon) {
+  if (!coupon) return 0;
+  return (subtotal * coupon.discount) / 100;
+}
+
+function updateOrderSummary() {
+  const subtotal = calculateCartSubtotal();
+  const coupon = getActiveCoupon();
+  const discount = calculateDiscount(subtotal, coupon);
   const shipping = subtotal > 0 ? 5.00 : 0;
-  const total = subtotal + shipping;
+  const total = subtotal - discount + shipping;
   
+  // Update cart page
   document.getElementById('subtotal').textContent = `€${subtotal.toFixed(2)}`;
   document.getElementById('shipping').textContent = `€${shipping.toFixed(2)}`;
   document.getElementById('total').textContent = `€${total.toFixed(2)}`;
+  
+  // Update cart discount row
+  const cartDiscountRow = document.getElementById('cart-discount-row');
+  const cartDiscountPercentage = document.getElementById('cart-discount-percentage');
+  const cartDiscountAmount = document.getElementById('cart-discount-amount');
+  
+  if (cartDiscountRow && cartDiscountPercentage && cartDiscountAmount) {
+    if (coupon) {
+      cartDiscountRow.style.display = 'flex';
+      cartDiscountPercentage.textContent = coupon.discount;
+      cartDiscountAmount.textContent = discount.toFixed(2);
+    } else {
+      cartDiscountRow.style.display = 'none';
+    }
+  }
+  
+  // Update checkout page if it exists
+  const checkoutSubtotal = document.getElementById('checkout-subtotal');
+  const checkoutShipping = document.getElementById('checkout-shipping');
+  const checkoutTotal = document.getElementById('checkout-total');
+  const discountRow = document.getElementById('checkout-discount-row');
+  const discountPercentage = document.getElementById('discount-percentage');
+  const discountAmount = document.getElementById('discount-amount');
+  
+  if (checkoutSubtotal) checkoutSubtotal.textContent = `€${subtotal.toFixed(2)}`;
+  if (checkoutShipping) checkoutShipping.textContent = `€${shipping.toFixed(2)}`;
+  if (checkoutTotal) checkoutTotal.textContent = `€${total.toFixed(2)}`;
+  
+  // Show/hide checkout discount row
+  if (discountRow && discountPercentage && discountAmount) {
+    if (coupon) {
+      discountRow.style.display = 'flex';
+      discountPercentage.textContent = coupon.discount;
+      discountAmount.textContent = discount.toFixed(2);
+    } else {
+      discountRow.style.display = 'none';
+    }
+  }
 }
 
 // Checkout Functions
 function renderCheckoutSummary() {
   const container = document.getElementById('checkout-items');
-  const subtotal = cartItems.reduce((total, item) => {
-    const price = item.selectedPrice || getPriceForPeriod(item, item.rentalPeriod);
-    return total + (price * (item.quantity || 1));
-  }, 0);
-  
+  const subtotal = calculateCartSubtotal();
+  const coupon = getActiveCoupon();
+  const discount = calculateDiscount(subtotal, coupon);
   const shipping = 5.00;
-  const total = subtotal + shipping;
+  const total = subtotal - discount + shipping;
   
   container.innerHTML = '';
+  const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+  
   cartItems.forEach(item => {
     const price = item.selectedPrice || getPriceForPeriod(item, item.rentalPeriod);
     const periodText = getPeriodText(item.rentalPeriod);
@@ -517,6 +577,86 @@ function renderCheckoutSummary() {
   document.getElementById('checkout-subtotal').textContent = `€${subtotal.toFixed(2)}`;
   document.getElementById('checkout-shipping').textContent = `€${shipping.toFixed(2)}`;
   document.getElementById('checkout-total').textContent = `€${total.toFixed(2)}`;
+  
+  // Update discount display
+  const discountRow = document.getElementById('checkout-discount-row');
+  const discountPercentage = document.getElementById('discount-percentage');
+  const discountAmount = document.getElementById('discount-amount');
+  
+  if (discountRow && discountPercentage && discountAmount) {
+    if (coupon) {
+      discountRow.style.display = 'flex';
+      discountPercentage.textContent = coupon.discount;
+      discountAmount.textContent = discount.toFixed(2);
+    } else {
+      discountRow.style.display = 'none';
+    }
+  }
+}
+
+// COUPON UI FUNCTIONS
+function updateCheckoutCouponDisplay() {
+  const appliedCouponEl = document.getElementById('applied-coupon');
+  const couponInputGroup = document.getElementById('coupon-input-group');
+  const coupon = getActiveCoupon();
+  
+  if (appliedCouponEl && couponInputGroup && coupon) {
+    appliedCouponEl.style.display = 'block';
+    appliedCouponEl.innerHTML = `
+      <div class="coupon-applied">
+        <strong>Toegepaste korting:</strong> ${coupon.discount}% OFF 
+        <span class="coupon-code">${coupon.code}</span>
+        <button class="btn btn-sm btn-outline-danger ms-2" onclick="removeCoupon()">Verwijderen</button>
+      </div>
+    `;
+    couponInputGroup.style.display = 'none';
+  }
+}
+
+function removeCoupon() {
+  localStorage.removeItem('tech4rent_coupon');
+  
+  const appliedCouponEl = document.getElementById('applied-coupon');
+  const couponInputGroup = document.getElementById('coupon-input-group');
+  
+  if (appliedCouponEl && couponInputGroup) {
+    appliedCouponEl.style.display = 'none';
+    couponInputGroup.style.display = 'flex';
+  }
+  
+  // Update order summary without discount
+  updateOrderSummary();
+  
+  showNotification('Korting verwijderd', 'info');
+}
+
+function applyCoupon() {
+  const couponCode = document.getElementById('coupon-code').value.trim().toUpperCase();
+  const validCoupon = getCouponByCode(couponCode);
+  
+  if (validCoupon) {
+    localStorage.setItem('tech4rent_coupon', JSON.stringify(validCoupon));
+    updateCheckoutCouponDisplay();
+    updateOrderSummary();
+    document.getElementById('coupon-code').value = '';
+    showNotification(`🎉 ${validCoupon.discount}% korting toegepast! Code: ${validCoupon.code}`, 'success');
+  } else {
+    showNotification('❌ Ongeldige kortingscode', 'error');
+  }
+}
+
+function getCouponByCode(code) {
+  const coupons = [
+    { color: "#FFBC03", text: "#333333", label: "10% OFF", discount: 10, code: "SAVE10" },
+    { color: "#FF5A10", text: "#FFFFFF", label: "15% OFF", discount: 15, code: "SAVE15" },
+    { color: "#4CAF50", text: "#FFFFFF", label: "20% OFF", discount: 20, code: "SAVE20" },
+    { color: "#2196F3", text: "#FFFFFF", label: "25% OFF", discount: 25, code: "SAVE25" },
+    { color: "#9C27B0", text: "#FFFFFF", label: "30% OFF", discount: 30, code: "SAVE30" },
+    { color: "#FF5722", text: "#FFFFFF", label: "35% OFF", discount: 35, code: "SAVE35" },
+    { color: "#607D8B", text: "#FFFFFF", label: "40% OFF", discount: 40, code: "SAVE40" },
+    { color: "#795548", text: "#FFFFFF", label: "50% OFF", discount: 50, code: "SAVE50" },
+  ];
+  return coupons.find(coupon => coupon.code === code);
 }
 
 // Credit Card Input Formatting
@@ -593,6 +733,13 @@ function processOrder() {
     return;
   }
   
+  // Calculate final totals with discount
+  const subtotal = calculateCartSubtotal();
+  const coupon = getActiveCoupon();
+  const discount = calculateDiscount(subtotal, coupon);
+  const shipping = 5.00;
+  const total = subtotal - discount + shipping;
+  
   // Process order
   const order = {
     id: 'T4R' + Date.now(),
@@ -611,7 +758,11 @@ function processOrder() {
       type: cardNumber.startsWith('4') ? 'Visa' : 'Mastercard'
     },
     rentalPeriod: selectedRentalPeriod,
-    total: document.getElementById('checkout-total').textContent,
+    subtotal: `€${subtotal.toFixed(2)}`,
+    discount: coupon ? `-€${discount.toFixed(2)} (${coupon.discount}%)` : '€0.00',
+    shipping: `€${shipping.toFixed(2)}`,
+    total: `€${total.toFixed(2)}`,
+    coupon: coupon ? coupon.code : 'Geen',
     date: new Date().toLocaleDateString('nl-NL'),
     time: new Date().toLocaleTimeString('nl-NL')
   };
@@ -621,9 +772,10 @@ function processOrder() {
   orders.push(order);
   localStorage.setItem('orders', JSON.stringify(orders));
   
-  // Clear cart
+  // Clear cart and coupon
   cartItems = [];
   localStorage.setItem('cartItems', JSON.stringify(cartItems));
+  localStorage.removeItem('tech4rent_coupon');
   updateBadges();
   
   // Show confirmation
@@ -640,6 +792,7 @@ function showOrderConfirmation(order) {
     <p><strong>${getTranslation('orderNumber')}:</strong> ${order.id}</p>
     <p><strong>${getTranslation('date')}:</strong> ${order.date} ${getTranslation('at')} ${order.time}</p>
     <p><strong>${getTranslation('rentalPeriod')}:</strong> ${getRentalPeriodText(order.rentalPeriod)}</p>
+    <p><strong>Korting:</strong> ${order.discount}</p>
     <p><strong>${getTranslation('paymentMethod')}:</strong> ${order.payment.type} ****${order.payment.lastFour}</p>
     <p><strong>${getTranslation('totalAmount')}:</strong> ${order.total}</p>
     <p><strong>${getTranslation('customer')}:</strong> ${order.customer.firstName} ${order.customer.lastName}</p>
@@ -1095,18 +1248,29 @@ function initEventListeners() {
   selectedRentalPeriod = 'day';
 }
 
-function showAboutPage() {
-  hideAllPages();
-  renderAboutPage();
-  toggleHeroSection(false); // ADD THIS LINE
-  currentPage = 'about';
-  updateLanguage();
+// Placeholder functions for about and terms pages
+function renderAboutPage() {
+  const mainContent = document.getElementById('main-content');
+  mainContent.innerHTML = `
+    <div class="row">
+      <div class="col-12">
+        <h2>Over Tech4Rent</h2>
+        <p>Tech4Rent is gespecialiseerd in het verhuren van hoogwaardige laptops en gaming apparatuur.</p>
+      </div>
+    </div>
+  `;
+  showMainContentPage();
 }
 
-function showTermsPage() {
-  hideAllPages();
-  renderTermsPage();
-  toggleHeroSection(false); // ADD THIS LINE
-  currentPage = 'terms';
-  updateLanguage();
+function renderTermsPage() {
+  const mainContent = document.getElementById('main-content');
+  mainContent.innerHTML = `
+    <div class="row">
+      <div class="col-12">
+        <h2>Algemene Voorwaarden</h2>
+        <p>Hier komen de algemene voorwaarden van Tech4Rent.</p>
+      </div>
+    </div>
+  `;
+  showMainContentPage();
 }
