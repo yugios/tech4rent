@@ -685,3 +685,193 @@ body.dark-mode .wheel-container {
   border-color: var(--emerald);
 }
 
+/* Floating button for wheel */
+.floating-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #FFBC03, #FF5A10);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 1000;
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.floating-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Wheel overlay */
+.wheel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.wheel-container {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  text-align: center;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.wheel-container h3 {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.wheel-tries {
+  margin-bottom: 20px;
+  font-weight: bold;
+  color: #FF5A10;
+  font-size: 16px;
+}
+
+/* Wheel styles */
+#spin_the_wheel {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+#wheel {
+  display: block;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+#spin {
+  font: 1.5em/0 "Lato", sans-serif;
+  user-select: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30%;
+  height: 30%;
+  margin: -15%;
+  background: #fff;
+  color: #fff;
+  box-shadow: 0 0 0 8px currentColor, 0 0px 15px 5px rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  transition: 0.8s;
+}
+
+#spin::after {
+  content: "";
+  position: absolute;
+  top: -17px;
+  border: 10px solid transparent;
+  border-bottom-color: currentColor;
+  border-top: none;
+}
+
+#spin:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+#wheel-result {
+  min-height: 80px;
+  font-weight: bold;
+  font-size: 18px;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+#close-wheel {
+  background: #6c757d;
+  border: none;
+  padding: 10px 20px;
+}
+
+#close-wheel:hover {
+  background: #5a6268;
+}
+
+/* Coupon styles */
+.coupon-applied {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+.coupon-code {
+  font-weight: bold;
+  font-size: 1.3em;
+  color: #28a745;
+  background: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin: 0 5px;
+}
+
+.discount-badge {
+  background: #ffc107;
+  color: #212529;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .wheel-container {
+    padding: 20px;
+  }
+  
+  #wheel {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .floating-btn {
+    width: 60px;
+    height: 60px;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  #wheel {
+    width: 250px;
+    height: 250px;
+  }
+  
+  .wheel-container {
+    padding: 15px;
+  }
+  
+  #spin {
+    font-size: 1.2em;
+  }
+}
